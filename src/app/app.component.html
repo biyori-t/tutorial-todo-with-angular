@@ -3,7 +3,5 @@
   <input #todo (keyup.enter)="addTodo(todo)" />
   <button (click)="addTodo(todo)">Add</button>
   <div>List</div>
-  <ul>
-    <li *ngFor="let todo of todoes">{{ todo }}</li>
-  </ul>
+  <app-todoes [todoes]="todoes"></app-todoes>
 </div>
