@@ -1,7 +1,6 @@
 <div>
-  <h1>Todo</h1>
-  <input #todo (keyup.enter)="addTodo(todo)" />
-  <button (click)="addTodo(todo)">Add</button>
+  <app-title></app-title>
+  <app-todo-add (onAddButton)="addTodo($event)"></app-todo-add>
   <div>List</div>
   <app-todoes [todoes]="todoes"></app-todoes>
 </div>

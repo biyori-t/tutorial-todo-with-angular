@@ -10,10 +10,7 @@ export class AppComponent {
 
   constructor() {}
 
-  addTodo(todo: HTMLInputElement) {
-    if (todo.value) {
-      this.todoes.push(todo.value);
-      todo.value = '';
-    }
+  addTodo(todo: string) {
+    this.todoes.push(todo);
   }
 }
