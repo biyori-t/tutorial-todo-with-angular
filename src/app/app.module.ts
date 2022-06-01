@@ -6,6 +6,7 @@ import { TodoesComponent } from './todoes/todoes.component';
 import { TodoComponent } from './todoes/todo/todo.component';
 import { TodoAddComponent } from './todo-add/todo-add.component';
 import { TitleComponent } from './title/title.component';
+import { TaskComponent } from './task/task.component';
 
 @NgModule({
   declarations: [
@@ -13,7 +14,8 @@ import { TitleComponent } from './title/title.component';
     TodoesComponent,
     TodoComponent,
     TodoAddComponent,
-    TitleComponent
+    TitleComponent,
+    TaskComponent
   ],
   imports: [
     BrowserModule
