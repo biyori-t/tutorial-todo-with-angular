@@ -1,3 +1,7 @@
 <ul>
-  <app-todo *ngFor="let todo of todoes" [todo]="todo"></app-todo>
+  <app-todo
+    *ngFor="let todo of todoes"
+    [todo]="todo"
+    (delete)="onDelete($event)"
+  ></app-todo>
 </ul>

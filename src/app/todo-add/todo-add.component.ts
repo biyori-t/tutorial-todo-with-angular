@@ -1,4 +1,5 @@
 import { Component, EventEmitter, OnInit, Output } from '@angular/core';
+import { Todo, createTodo } from '../models/todo.model';
 
 @Component({
   selector: 'app-todo-add',
@@ -6,7 +7,7 @@ import { Component, EventEmitter, OnInit, Output } from '@angular/core';
   styleUrls: ['./todo-add.component.scss'],
 })
 export class TodoAddComponent implements OnInit {
-  @Output() onAddButton = new EventEmitter<string>();
+  @Output() onAddButton = new EventEmitter<Todo>();
 
   constructor() {}
 
@@ -14,7 +15,7 @@ export class TodoAddComponent implements OnInit {
 
   addTodo(todo: HTMLInputElement) {
     if (todo.value) {
-      this.onAddButton.emit(todo.value);
+      this.onAddButton.emit(createTodo(todo.value));
       todo.value = '';
     }
   }
