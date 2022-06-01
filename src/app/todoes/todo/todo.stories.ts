@@ -3,10 +3,9 @@ import { TodoComponent } from './todo.component';
 
 export default {
   component: TodoComponent,
-  excludeStories: /.*Data$/,
-} as Meta<typeof TodoComponent>;
+} as Meta;
 
-export const Default: StoryObj = {
+export const Default: StoryObj<TodoComponent> = {
   render: (args) => ({
     template: `<app-todo [todo]="todo"></app-todo>`,
     props: args,

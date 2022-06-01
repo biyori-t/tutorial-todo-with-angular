@@ -5,8 +5,7 @@ import { TaskComponent } from './task.component';
 
 export default {
   component: TaskComponent,
-  excludeStories: /.*Data$/,
-} as Meta<TaskComponent>;
+} as Meta;
 
 export const Default: StoryObj<TaskComponent> = {
   render: (args) => ({
