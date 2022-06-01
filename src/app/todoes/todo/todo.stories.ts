@@ -13,17 +13,18 @@ export const Default: StoryObj<TodoComponent> = {
     props: args,
   }),
   args: {
-    todo: 'Todo をここに表示する',
+    todo: { id: 1, title: 'Todo' },
   },
 };
 
 export const Delete: StoryObj<TodoComponent> = {
+  name: '削除するボタンを押す',
   render: (args) => ({
     template: `<app-todo [todo]="todo"></app-todo>`,
     props: args,
   }),
   args: {
-    todo: 'Todo',
+    todo: { id: 1, title: 'Todo' },
   },
   play: async () => {
     const deleteButton = screen.getByRole('button');

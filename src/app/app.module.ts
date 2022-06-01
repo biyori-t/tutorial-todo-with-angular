@@ -6,7 +6,6 @@ import { TodoesComponent } from './todoes/todoes.component';
 import { TodoComponent } from './todoes/todo/todo.component';
 import { TodoAddComponent } from './todo-add/todo-add.component';
 import { TitleComponent } from './title/title.component';
-import { TaskComponent } from './task/task.component';
 
 @NgModule({
   declarations: [
@@ -15,12 +14,9 @@ import { TaskComponent } from './task/task.component';
     TodoComponent,
     TodoAddComponent,
     TitleComponent,
-    TaskComponent
   ],
-  imports: [
-    BrowserModule
-  ],
+  imports: [BrowserModule],
   providers: [],
-  bootstrap: [AppComponent]
+  bootstrap: [AppComponent],
 })
-export class AppModule { }
+export class AppModule {}
