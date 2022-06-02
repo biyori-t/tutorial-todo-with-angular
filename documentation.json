@@ -3,12 +3,12 @@
     "interfaces": [
         {
             "name": "Task",
-            "id": "interface-Task-598a01e54febeb63f6421d5faa524eae83e5a737e0ca18d9f9563f2c327d05af418dfbc509096cc94d0028d9e0544ec92b6d5d202035871bf956271e1e7651f3",
+            "id": "interface-Task-adfb6cbb9fca35aff11fa105d7855230d378fabf08f190a2f5786c200456115f95320980489a040509eaceec11b3cbef4d86efb319b43992dfb8e840d1906f22",
             "file": "src/app/models/task.model.ts",
             "deprecated": false,
             "deprecationMessage": "",
             "type": "interface",
-            "sourceCode": "export interface Task {\r\n  id: string;\r\n  title: string;\r\n  state: string;\r\n  updatedAt: Date;\r\n}\r\n\r\nexport function defaultTask() {\r\n  return {\r\n    id: '1',\r\n    title: 'Test Task',\r\n    state: 'TASK_INBOX',\r\n    updatedAt: new Date(2022, 5, 26, 21, 47),\r\n  };\r\n}\r\n",
+            "sourceCode": "export interface Task {\n  id: string;\n  title: string;\n  state: string;\n  updatedAt: Date;\n}\n\nexport function defaultTask() {\n  return {\n    id: '1',\n    title: 'Test Task',\n    state: 'TASK_INBOX',\n    updatedAt: new Date(2022, 5, 26, 21, 47),\n  };\n}\n",
             "properties": [
                 {
                     "name": "id",
@@ -731,7 +731,7 @@
                 "deprecated": false,
                 "deprecationMessage": "",
                 "type": "StoryObj<TitleComponent>",
-                "defaultValue": "{\r\n  render: (args) => ({\r\n    template: `<app-title [title]=\"title\"></app-title>`,\r\n    props: args,\r\n  }),\r\n  args: {\r\n    title: 'Test Title',\r\n  },\r\n}"
+                "defaultValue": "{\n  render: (args) => ({\n    template: `<app-title [title]=\"title\"></app-title>`,\n    props: args,\n  }),\n  args: {\n    title: 'Test Title',\n  },\n}"
             },
             {
                 "name": "Default",
@@ -741,7 +741,7 @@
                 "deprecated": false,
                 "deprecationMessage": "",
                 "type": "StoryObj<TodoAddComponent>",
-                "defaultValue": "{\r\n  render: (args) => ({\r\n    template: `<app-todo-add></app-todo-add>`,\r\n    props: args,\r\n  }),\r\n}"
+                "defaultValue": "{\n  render: (args) => ({\n    template: `<app-todo-add></app-todo-add>`,\n    props: args,\n  }),\n}"
             },
             {
                 "name": "Default",
@@ -751,7 +751,7 @@
                 "deprecated": false,
                 "deprecationMessage": "",
                 "type": "StoryObj<TodoesComponent>",
-                "defaultValue": "{\r\n  render: (args) => ({\r\n    template: `<app-todoes [todoes]=\"todoes\"></app-todoes>`,\r\n    props: args,\r\n  }),\r\n  args: { todoes: ['Test1', 'Test2', 'Test3'] },\r\n}"
+                "defaultValue": "{\n  render: (args) => ({\n    template: `<app-todoes [todoes]=\"todoes\"></app-todoes>`,\n    props: args,\n  }),\n  args: { todoes: ['Test1', 'Test2', 'Test3'] },\n}"
             },
             {
                 "name": "Default",
@@ -761,7 +761,17 @@
                 "deprecated": false,
                 "deprecationMessage": "",
                 "type": "StoryObj<TodoComponent>",
-                "defaultValue": "{\r\n  render: (args) => ({\r\n    template: `<app-todo [todo]=\"todo\"></app-todo>`,\r\n    props: args,\r\n  }),\r\n  args: {\r\n    todo: 'Todo をここに表示する',\r\n  },\r\n}"
+                "defaultValue": "{\n  render: (args) => ({\n    template: `<app-todo [todo]=\"todo\"></app-todo>`,\n    props: args,\n  }),\n  args: {\n    todo: 'Todo をここに表示する',\n  },\n}"
+            },
+            {
+                "name": "Delete",
+                "ctype": "miscellaneous",
+                "subtype": "variable",
+                "file": "src/app/todoes/todo/todo.stories.ts",
+                "deprecated": false,
+                "deprecationMessage": "",
+                "type": "StoryObj<TodoComponent>",
+                "defaultValue": "{\n  render: (args) => ({\n    template: `<app-todo [todo]=\"todo\"></app-todo>`,\n    props: args,\n  }),\n  args: {\n    todo: 'Todo',\n  },\n  play: async () => {\n    const deleteButton = screen.getByRole('button');\n    fireEvent.click(deleteButton);\n  },\n}"
             },
             {
                 "name": "environment",
@@ -850,7 +860,7 @@
                     "deprecated": false,
                     "deprecationMessage": "",
                     "type": "StoryObj<TitleComponent>",
-                    "defaultValue": "{\r\n  render: (args) => ({\r\n    template: `<app-title [title]=\"title\"></app-title>`,\r\n    props: args,\r\n  }),\r\n  args: {\r\n    title: 'Test Title',\r\n  },\r\n}"
+                    "defaultValue": "{\n  render: (args) => ({\n    template: `<app-title [title]=\"title\"></app-title>`,\n    props: args,\n  }),\n  args: {\n    title: 'Test Title',\n  },\n}"
                 }
             ],
             "src/app/todo-add/todo-add.stories.ts": [
@@ -862,7 +872,7 @@
                     "deprecated": false,
                     "deprecationMessage": "",
                     "type": "StoryObj<TodoAddComponent>",
-                    "defaultValue": "{\r\n  render: (args) => ({\r\n    template: `<app-todo-add></app-todo-add>`,\r\n    props: args,\r\n  }),\r\n}"
+                    "defaultValue": "{\n  render: (args) => ({\n    template: `<app-todo-add></app-todo-add>`,\n    props: args,\n  }),\n}"
                 }
             ],
             "src/app/todoes/todoes.stories.ts": [
@@ -874,7 +884,7 @@
                     "deprecated": false,
                     "deprecationMessage": "",
                     "type": "StoryObj<TodoesComponent>",
-                    "defaultValue": "{\r\n  render: (args) => ({\r\n    template: `<app-todoes [todoes]=\"todoes\"></app-todoes>`,\r\n    props: args,\r\n  }),\r\n  args: { todoes: ['Test1', 'Test2', 'Test3'] },\r\n}"
+                    "defaultValue": "{\n  render: (args) => ({\n    template: `<app-todoes [todoes]=\"todoes\"></app-todoes>`,\n    props: args,\n  }),\n  args: { todoes: ['Test1', 'Test2', 'Test3'] },\n}"
                 }
             ],
             "src/app/todoes/todo/todo.stories.ts": [
@@ -886,7 +896,17 @@
                     "deprecated": false,
                     "deprecationMessage": "",
                     "type": "StoryObj<TodoComponent>",
-                    "defaultValue": "{\r\n  render: (args) => ({\r\n    template: `<app-todo [todo]=\"todo\"></app-todo>`,\r\n    props: args,\r\n  }),\r\n  args: {\r\n    todo: 'Todo をここに表示する',\r\n  },\r\n}"
+                    "defaultValue": "{\n  render: (args) => ({\n    template: `<app-todo [todo]=\"todo\"></app-todo>`,\n    props: args,\n  }),\n  args: {\n    todo: 'Todo をここに表示する',\n  },\n}"
+                },
+                {
+                    "name": "Delete",
+                    "ctype": "miscellaneous",
+                    "subtype": "variable",
+                    "file": "src/app/todoes/todo/todo.stories.ts",
+                    "deprecated": false,
+                    "deprecationMessage": "",
+                    "type": "StoryObj<TodoComponent>",
+                    "defaultValue": "{\n  render: (args) => ({\n    template: `<app-todo [todo]=\"todo\"></app-todo>`,\n    props: args,\n  }),\n  args: {\n    todo: 'Todo',\n  },\n  play: async () => {\n    const deleteButton = screen.getByRole('button');\n    fireEvent.click(deleteButton);\n  },\n}"
                 }
             ],
             "src/environments/environment.prod.ts": [
@@ -1056,6 +1076,16 @@
                 "linktype": "miscellaneous",
                 "linksubtype": "variable",
                 "name": "Default",
+                "coveragePercent": 0,
+                "coverageCount": "0/1",
+                "status": "low"
+            },
+            {
+                "filePath": "src/app/todoes/todo/todo.stories.ts",
+                "type": "variable",
+                "linktype": "miscellaneous",
+                "linksubtype": "variable",
+                "name": "Delete",
                 "coveragePercent": 0,
                 "coverageCount": "0/1",
                 "status": "low"

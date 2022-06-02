@@ -1,1 +1,6 @@
-<li>{{ todo }}</li>
+<li *ngIf="todo">
+  {{ todo.title }}
+  <button [attr.data-testid]="todo.id" (click)="onDelete(todo.id)">
+    Delete
+  </button>
+</li>
