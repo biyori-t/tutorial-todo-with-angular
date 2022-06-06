@@ -1,11 +1,11 @@
-let id = 0;
+import { v4 as uuid } from 'uuid';
 
 export interface Todo {
-  id: number;
+  id: string;
   title: string;
 }
 
 export function createTodo(title: string): Todo {
-  id += 1;
+  const id = uuid();
   return { id, title };
 }

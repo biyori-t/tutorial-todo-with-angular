@@ -1,7 +1,3 @@
 <ul>
-  <app-todo
-    *ngFor="let todo of todoes"
-    [todo]="todo"
-    (delete)="onDelete($event)"
-  ></app-todo>
+  <app-todo *ngFor="let todo of todoes$ | async" [todo]="todo"></app-todo>
 </ul>

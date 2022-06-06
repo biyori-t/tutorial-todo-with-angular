@@ -2,6 +2,7 @@ import { Meta, StoryObj } from '@storybook/angular';
 import { TodoComponent } from './todo.component';
 
 import { screen, fireEvent } from '@storybook/testing-library';
+import { createTodo } from 'src/app/models/todo.model';
 
 export default {
   component: TodoComponent,
@@ -13,7 +14,7 @@ export const Default: StoryObj<TodoComponent> = {
     props: args,
   }),
   args: {
-    todo: { id: 1, title: 'Todo' },
+    todo: createTodo('Todo'),
   },
 };
 
@@ -24,7 +25,7 @@ export const Delete: StoryObj<TodoComponent> = {
     props: args,
   }),
   args: {
-    todo: { id: 1, title: 'Todo' },
+    todo: createTodo('Todo'),
   },
   play: async () => {
     const deleteButton = screen.getByRole('button');

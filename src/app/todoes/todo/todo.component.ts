@@ -1,5 +1,6 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { Todo } from 'src/app/models/todo.model';
+import { TodoStoreService } from 'src/app/store/todo-store/todo-store.service';
 
 @Component({
   selector: 'app-todo',
@@ -8,13 +9,12 @@ import { Todo } from 'src/app/models/todo.model';
 })
 export class TodoComponent implements OnInit {
   @Input() todo?: Todo;
-  @Output() delete = new EventEmitter<number>();
 
-  constructor() {}
+  constructor(private readonly todoStore: TodoStoreService) {}
 
   ngOnInit(): void {}
 
-  onDelete(value: number) {
-    this.delete.emit(value);
+  onDelete(id: string) {
+    this.todoStore.delete(id);
   }
 }

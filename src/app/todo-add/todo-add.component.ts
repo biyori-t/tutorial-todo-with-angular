@@ -1,5 +1,5 @@
-import { Component, EventEmitter, OnInit, Output } from '@angular/core';
-import { Todo, createTodo } from '../models/todo.model';
+import { Component, OnInit } from '@angular/core';
+import { TodoStoreService } from '../store/todo-store/todo-store.service';
 
 @Component({
   selector: 'app-todo-add',
@@ -7,16 +7,15 @@ import { Todo, createTodo } from '../models/todo.model';
   styleUrls: ['./todo-add.component.scss'],
 })
 export class TodoAddComponent implements OnInit {
-  @Output() onAddButton = new EventEmitter<Todo>();
-
-  constructor() {}
+  constructor(private readonly todoStore: TodoStoreService) {}
 
   ngOnInit(): void {}
 
-  addTodo(todo: HTMLInputElement) {
-    if (todo.value) {
-      this.onAddButton.emit(createTodo(todo.value));
-      todo.value = '';
+  addTodo(todoTitle: HTMLInputElement) {
+    if (todoTitle.value) {
+      this.todoStore.add(todoTitle.value);
+
+      todoTitle.value = '';
     }
   }
 }

@@ -2,25 +2,16 @@
     "pipes": [],
     "interfaces": [
         {
-            "name": "Task",
-            "id": "interface-Task-adfb6cbb9fca35aff11fa105d7855230d378fabf08f190a2f5786c200456115f95320980489a040509eaceec11b3cbef4d86efb319b43992dfb8e840d1906f22",
-            "file": "src/app/models/task.model.ts",
+            "name": "Todo",
+            "id": "interface-Todo-332da370ed01a20133a695a76c3962486541449efb47c30d87a611d49a65cd0daef9284ac3c239e7915e6f257bc7999bdaa249a87cacf25ce40cc2f50e3e0206",
+            "file": "src/app/models/todo.model.ts",
             "deprecated": false,
             "deprecationMessage": "",
             "type": "interface",
-            "sourceCode": "export interface Task {\n  id: string;\n  title: string;\n  state: string;\n  updatedAt: Date;\n}\n\nexport function defaultTask() {\n  return {\n    id: '1',\n    title: 'Test Task',\n    state: 'TASK_INBOX',\n    updatedAt: new Date(2022, 5, 26, 21, 47),\n  };\n}\n",
+            "sourceCode": "import { v4 as uuid } from 'uuid';\n\nexport interface Todo {\n  id: string;\n  title: string;\n}\n\nexport function createTodo(title: string): Todo {\n  const id = uuid();\n  return { id, title };\n}\n",
             "properties": [
                 {
                     "name": "id",
-                    "deprecated": false,
-                    "deprecationMessage": "",
-                    "type": "string",
-                    "optional": false,
-                    "description": "",
-                    "line": 2
-                },
-                {
-                    "name": "state",
                     "deprecated": false,
                     "deprecationMessage": "",
                     "type": "string",
@@ -35,13 +26,27 @@
                     "type": "string",
                     "optional": false,
                     "description": "",
-                    "line": 3
-                },
+                    "line": 5
+                }
+            ],
+            "indexSignatures": [],
+            "kind": 165,
+            "methods": []
+        },
+        {
+            "name": "TodoProps",
+            "id": "interface-TodoProps-5de387d44196e66bea343de1e365c868db78ff2af8830d56c76904e58ca5a9975a232977fb070b988810adca4b22c79176f11388d86ce419557dee42454c7ef7",
+            "file": "src/app/store/todo-store/todo.store.ts",
+            "deprecated": false,
+            "deprecationMessage": "",
+            "type": "interface",
+            "sourceCode": "import { createStore, withProps } from '@ngneat/elf';\r\nimport { createTodo, Todo } from '../../models/todo.model';\r\n\r\ninterface TodoProps {\r\n  todoes: Todo[];\r\n}\r\n\r\nexport const todoStore = createStore(\r\n  { name: 'todo' },\r\n  withProps<TodoProps>({\r\n    todoes: [createTodo('Todo1'), createTodo('Todo2'), createTodo('Todo3')],\r\n  })\r\n);\r\n",
+            "properties": [
                 {
-                    "name": "updatedAt",
+                    "name": "todoes",
                     "deprecated": false,
                     "deprecationMessage": "",
-                    "type": "Date",
+                    "type": "Todo[]",
                     "optional": false,
                     "description": "",
                     "line": 5
@@ -52,7 +57,97 @@
             "methods": []
         }
     ],
-    "injectables": [],
+    "injectables": [
+        {
+            "name": "TodoStoreService",
+            "id": "injectable-TodoStoreService-8618e534ab00d495ba3f62a4e61a080e7541bec47a481b7ba6e22b84285ea3ca941541492d4ac6d9ae7a57d526f5adb0aba79d241e9c90a7bcd58bc8bd92fcc6",
+            "file": "src/app/store/todo-store/todo-store.service.ts",
+            "properties": [],
+            "methods": [
+                {
+                    "name": "add",
+                    "args": [
+                        {
+                            "name": "name",
+                            "type": "string",
+                            "deprecated": false,
+                            "deprecationMessage": ""
+                        }
+                    ],
+                    "optional": false,
+                    "returnType": "void",
+                    "typeParameters": [],
+                    "line": 16,
+                    "deprecated": false,
+                    "deprecationMessage": "",
+                    "jsdoctags": [
+                        {
+                            "name": "name",
+                            "type": "string",
+                            "deprecated": false,
+                            "deprecationMessage": "",
+                            "tagName": {
+                                "text": "param"
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "delete",
+                    "args": [
+                        {
+                            "name": "id",
+                            "type": "string",
+                            "deprecated": false,
+                            "deprecationMessage": ""
+                        }
+                    ],
+                    "optional": false,
+                    "returnType": "void",
+                    "typeParameters": [],
+                    "line": 21,
+                    "deprecated": false,
+                    "deprecationMessage": "",
+                    "jsdoctags": [
+                        {
+                            "name": "id",
+                            "type": "string",
+                            "deprecated": false,
+                            "deprecationMessage": "",
+                            "tagName": {
+                                "text": "param"
+                            }
+                        }
+                    ]
+                }
+            ],
+            "deprecated": false,
+            "deprecationMessage": "",
+            "description": "",
+            "rawdescription": "\n",
+            "sourceCode": "import { Injectable } from '@angular/core';\nimport { todoStore } from './todo.store';\nimport { select, setProp } from '@ngneat/elf';\nimport { createTodo } from 'src/app/models/todo.model';\n\n@Injectable({\n  providedIn: 'root',\n})\nexport class TodoStoreService {\n  get todoes$() {\n    return todoStore.pipe(select((state) => state.todoes));\n  }\n\n  constructor() {}\n\n  add(name: string) {\n    const todo = createTodo(name);\n    todoStore.update(setProp('todoes', (todoes) => [...todoes, todo]));\n  }\n\n  delete(id: string) {\n    todoStore.update(\n      setProp('todoes', (todoes) => todoes.filter((todo) => todo.id != id))\n    );\n  }\n}\n",
+            "constructorObj": {
+                "name": "constructor",
+                "description": "",
+                "deprecated": false,
+                "deprecationMessage": "",
+                "args": [],
+                "line": 12
+            },
+            "accessors": {
+                "todoes$": {
+                    "name": "todoes$",
+                    "getSignature": {
+                        "name": "todoes$",
+                        "type": "",
+                        "returnType": "",
+                        "line": 10
+                    }
+                }
+            },
+            "type": "injectable"
+        }
+    ],
     "guards": [],
     "interceptors": [],
     "classes": [],
@@ -60,7 +155,7 @@
     "components": [
         {
             "name": "AppComponent",
-            "id": "component-AppComponent-1fb18f8ece99c180113d69016ccb8543c8d6a705f9d19446616cbb6cc539b71c05c985272c7fccbac11ecf478cb56c42a6d03ab31c012d7d60b037e5cbfdd2ff",
+            "id": "component-AppComponent-f70b8dc5e0d56266343fb75a66320b8e2f66cb3fd271695a6147da28229a9a96eae5c248afcc4d455837ef71ce949bf7f80e6b95cd49c05fda9f7f803d1a1d47",
             "file": "src/app/app.component.ts",
             "encapsulation": [],
             "entryComponents": [],
@@ -78,48 +173,8 @@
             "viewProviders": [],
             "inputsClass": [],
             "outputsClass": [],
-            "propertiesClass": [
-                {
-                    "name": "todoes",
-                    "defaultValue": "[]",
-                    "deprecated": false,
-                    "deprecationMessage": "",
-                    "type": "string[]",
-                    "optional": false,
-                    "description": "",
-                    "line": 9
-                }
-            ],
-            "methodsClass": [
-                {
-                    "name": "addTodo",
-                    "args": [
-                        {
-                            "name": "todo",
-                            "type": "string",
-                            "deprecated": false,
-                            "deprecationMessage": ""
-                        }
-                    ],
-                    "optional": false,
-                    "returnType": "void",
-                    "typeParameters": [],
-                    "line": 13,
-                    "deprecated": false,
-                    "deprecationMessage": "",
-                    "jsdoctags": [
-                        {
-                            "name": "todo",
-                            "type": "string",
-                            "deprecated": false,
-                            "deprecationMessage": "",
-                            "tagName": {
-                                "text": "param"
-                            }
-                        }
-                    ]
-                }
-            ],
+            "propertiesClass": [],
+            "methodsClass": [],
             "deprecated": false,
             "deprecationMessage": "",
             "hostBindings": [],
@@ -127,7 +182,7 @@
             "description": "",
             "rawdescription": "\n",
             "type": "component",
-            "sourceCode": "import { Component } from '@angular/core';\n\n@Component({\n  selector: 'app-root',\n  templateUrl: './app.component.html',\n  styleUrls: ['./app.component.scss'],\n})\nexport class AppComponent {\n  todoes: string[] = [];\n\n  constructor() {}\n\n  addTodo(todo: string) {\n    this.todoes.push(todo);\n  }\n}\n",
+            "sourceCode": "import { Component } from '@angular/core';\n\n@Component({\n  selector: 'app-root',\n  templateUrl: './app.component.html',\n  styleUrls: ['./app.component.scss'],\n})\nexport class AppComponent {\n  constructor() {}\n}\n",
             "assetsDirs": [],
             "styleUrlsData": [
                 {
@@ -142,187 +197,9 @@
                 "deprecated": false,
                 "deprecationMessage": "",
                 "args": [],
-                "line": 9
+                "line": 8
             },
-            "templateData": "<div>\n  <app-title></app-title>\n  <app-todo-add (onAddButton)=\"addTodo($event)\"></app-todo-add>\n  <div>List</div>\n  <app-todoes [todoes]=\"todoes\"></app-todoes>\n</div>\n"
-        },
-        {
-            "name": "TaskComponent",
-            "id": "component-TaskComponent-f26edbb44eb33a28798fdc4a5b3983f026a5178f28384f8002b5dcbc7068e119f38ebb8a4f15880d04f5fd47d5fba5c703a0172b1bfc117d7caeb184c950feca",
-            "file": "src/app/task/task.component.ts",
-            "encapsulation": [],
-            "entryComponents": [],
-            "inputs": [],
-            "outputs": [],
-            "providers": [],
-            "selector": "app-task",
-            "styleUrls": [
-                "./task.component.scss"
-            ],
-            "styles": [],
-            "templateUrl": [
-                "./task.component.html"
-            ],
-            "viewProviders": [],
-            "inputsClass": [
-                {
-                    "name": "task",
-                    "deprecated": false,
-                    "deprecationMessage": "",
-                    "line": 10,
-                    "type": "Task",
-                    "decorators": []
-                }
-            ],
-            "outputsClass": [
-                {
-                    "name": "onArchiveTask",
-                    "defaultValue": "new EventEmitter<Event>()",
-                    "deprecated": false,
-                    "deprecationMessage": "",
-                    "line": 18,
-                    "type": "EventEmitter"
-                },
-                {
-                    "name": "onPinTask",
-                    "defaultValue": "new EventEmitter<Event>()",
-                    "deprecated": false,
-                    "deprecationMessage": "",
-                    "line": 14,
-                    "type": "EventEmitter"
-                }
-            ],
-            "propertiesClass": [],
-            "methodsClass": [
-                {
-                    "name": "ngOnInit",
-                    "args": [],
-                    "optional": false,
-                    "returnType": "void",
-                    "typeParameters": [],
-                    "line": 22,
-                    "deprecated": false,
-                    "deprecationMessage": ""
-                },
-                {
-                    "name": "onArchive",
-                    "args": [
-                        {
-                            "name": "id",
-                            "type": "any",
-                            "deprecated": false,
-                            "deprecationMessage": ""
-                        }
-                    ],
-                    "optional": false,
-                    "returnType": "void",
-                    "typeParameters": [],
-                    "line": 36,
-                    "deprecated": false,
-                    "deprecationMessage": "",
-                    "rawdescription": "\n\nアーカイブイベントを発生する\n",
-                    "description": "<p>アーカイブイベントを発生する</p>\n",
-                    "jsdoctags": [
-                        {
-                            "name": {
-                                "pos": 718,
-                                "end": 720,
-                                "flags": 4227072,
-                                "modifierFlagsCache": 0,
-                                "transformFlags": 0,
-                                "kind": 79,
-                                "escapedText": "id"
-                            },
-                            "type": "any",
-                            "deprecated": false,
-                            "deprecationMessage": "",
-                            "tagName": {
-                                "pos": 712,
-                                "end": 717,
-                                "flags": 4227072,
-                                "modifierFlagsCache": 0,
-                                "transformFlags": 0,
-                                "kind": 79,
-                                "escapedText": "param"
-                            },
-                            "comment": "<p>string</p>\n"
-                        }
-                    ]
-                },
-                {
-                    "name": "onPin",
-                    "args": [
-                        {
-                            "name": "id",
-                            "type": "any",
-                            "deprecated": false,
-                            "deprecationMessage": ""
-                        }
-                    ],
-                    "optional": false,
-                    "returnType": "void",
-                    "typeParameters": [],
-                    "line": 28,
-                    "deprecated": false,
-                    "deprecationMessage": "",
-                    "rawdescription": "\n\nピンイベントを発生させる\n",
-                    "description": "<p>ピンイベントを発生させる</p>\n",
-                    "jsdoctags": [
-                        {
-                            "name": {
-                                "pos": 611,
-                                "end": 613,
-                                "flags": 4227072,
-                                "modifierFlagsCache": 0,
-                                "transformFlags": 0,
-                                "kind": 79,
-                                "escapedText": "id"
-                            },
-                            "type": "any",
-                            "deprecated": false,
-                            "deprecationMessage": "",
-                            "tagName": {
-                                "pos": 605,
-                                "end": 610,
-                                "flags": 4227072,
-                                "modifierFlagsCache": 0,
-                                "transformFlags": 0,
-                                "kind": 79,
-                                "escapedText": "param"
-                            },
-                            "comment": "<p>string</p>\n"
-                        }
-                    ]
-                }
-            ],
-            "deprecated": false,
-            "deprecationMessage": "",
-            "hostBindings": [],
-            "hostListeners": [],
-            "description": "",
-            "rawdescription": "\n",
-            "type": "component",
-            "sourceCode": "import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';\nimport { Task } from '../models/task.model';\n\n@Component({\n  selector: 'app-task',\n  templateUrl: './task.component.html',\n  styleUrls: ['./task.component.scss'],\n})\nexport class TaskComponent implements OnInit {\n  @Input() task?: Task;\n\n  // tslint:disable-next-line: no-output-on-prefix\n  @Output()\n  onPinTask = new EventEmitter<Event>();\n\n  // tslint:disable-next-line: no-output-on-prefix\n  @Output()\n  onArchiveTask = new EventEmitter<Event>();\n\n  constructor() {}\n\n  ngOnInit(): void {}\n\n  /**\n   * ピンイベントを発生させる\n   * @param id string\n   */\n  onPin(id: any) {\n    this.onPinTask.emit(id);\n  }\n\n  /**\n   * アーカイブイベントを発生する\n   * @param id string\n   */\n  onArchive(id: any) {\n    this.onArchiveTask.emit(id);\n  }\n}\n",
-            "assetsDirs": [],
-            "styleUrlsData": [
-                {
-                    "data": "",
-                    "styleUrl": "./task.component.scss"
-                }
-            ],
-            "stylesData": "",
-            "constructorObj": {
-                "name": "constructor",
-                "description": "",
-                "deprecated": false,
-                "deprecationMessage": "",
-                "args": [],
-                "line": 18
-            },
-            "implements": [
-                "OnInit"
-            ],
-            "templateData": "<div class=\"list-item {{ task?.state }}\">\n  <label class=\"checkbox\">\n    <input\n      type=\"checkbox\"\n      [defaultChecked]=\"task?.state === 'TASK_ARCHIVED'\"\n      disabled=\"true\"\n      name=\"checked\"\n    />\n    <span class=\"checkbox-custom\" (click)=\"onArchive(task?.id)\"></span>\n  </label>\n  <div class=\"title\">\n    <input\n      type=\"text\"\n      [value]=\"task?.title\"\n      readonly=\"true\"\n      placeholder=\"Input title\"\n    />\n  </div>\n  <div class=\"actions\">\n    <a *ngIf=\"task?.state !== 'TASK_ARCHIVED'\" (click)=\"onPin(task?.id)\">\n      <span class=\"icon-star\"></span>\n    </a>\n  </div>\n</div>\n"
+            "templateData": "<div>\n  <app-title></app-title>\n  <app-todo-add></app-todo-add>\n  <div>List</div>\n  <app-todoes></app-todoes>\n</div>\n"
         },
         {
             "name": "TitleComponent",
@@ -398,7 +275,7 @@
         },
         {
             "name": "TodoAddComponent",
-            "id": "component-TodoAddComponent-b23c8e6f8a509563f7497536cca3667d0cfaefaadb8a1f09911356313f4996b87b17a9b9c59c78bcb27c22b7768fa846939877aee3d672164aad1cc94493ba26",
+            "id": "component-TodoAddComponent-20490d6c14d5540c2c1fc850f635f3b2495e59858e26920ca0567fdb59b0177714c4d28debac6f35013cee156b276db57f0bb0c9fb6d7c05b75dbe20b801d90d",
             "file": "src/app/todo-add/todo-add.component.ts",
             "encapsulation": [],
             "entryComponents": [],
@@ -415,23 +292,14 @@
             ],
             "viewProviders": [],
             "inputsClass": [],
-            "outputsClass": [
-                {
-                    "name": "onAddButton",
-                    "defaultValue": "new EventEmitter<string>()",
-                    "deprecated": false,
-                    "deprecationMessage": "",
-                    "line": 9,
-                    "type": "EventEmitter"
-                }
-            ],
+            "outputsClass": [],
             "propertiesClass": [],
             "methodsClass": [
                 {
                     "name": "addTodo",
                     "args": [
                         {
-                            "name": "todo",
+                            "name": "todoTitle",
                             "type": "HTMLInputElement",
                             "deprecated": false,
                             "deprecationMessage": ""
@@ -440,12 +308,12 @@
                     "optional": false,
                     "returnType": "void",
                     "typeParameters": [],
-                    "line": 15,
+                    "line": 14,
                     "deprecated": false,
                     "deprecationMessage": "",
                     "jsdoctags": [
                         {
-                            "name": "todo",
+                            "name": "todoTitle",
                             "type": "HTMLInputElement",
                             "deprecated": false,
                             "deprecationMessage": "",
@@ -461,7 +329,7 @@
                     "optional": false,
                     "returnType": "void",
                     "typeParameters": [],
-                    "line": 13,
+                    "line": 12,
                     "deprecated": false,
                     "deprecationMessage": ""
                 }
@@ -473,7 +341,7 @@
             "description": "",
             "rawdescription": "\n",
             "type": "component",
-            "sourceCode": "import { Component, EventEmitter, OnInit, Output } from '@angular/core';\n\n@Component({\n  selector: 'app-todo-add',\n  templateUrl: './todo-add.component.html',\n  styleUrls: ['./todo-add.component.scss'],\n})\nexport class TodoAddComponent implements OnInit {\n  @Output() onAddButton = new EventEmitter<string>();\n\n  constructor() {}\n\n  ngOnInit(): void {}\n\n  addTodo(todo: HTMLInputElement) {\n    if (todo.value) {\n      this.onAddButton.emit(todo.value);\n      todo.value = '';\n    }\n  }\n}\n",
+            "sourceCode": "import { Component, OnInit } from '@angular/core';\nimport { TodoStoreService } from '../store/todo-store/todo-store.service';\n\n@Component({\n  selector: 'app-todo-add',\n  templateUrl: './todo-add.component.html',\n  styleUrls: ['./todo-add.component.scss'],\n})\nexport class TodoAddComponent implements OnInit {\n  constructor(private readonly todoStore: TodoStoreService) {}\n\n  ngOnInit(): void {}\n\n  addTodo(todoTitle: HTMLInputElement) {\n    if (todoTitle.value) {\n      this.todoStore.add(todoTitle.value);\n\n      todoTitle.value = '';\n    }\n  }\n}\n",
             "assetsDirs": [],
             "styleUrlsData": [
                 {
@@ -487,17 +355,35 @@
                 "description": "",
                 "deprecated": false,
                 "deprecationMessage": "",
-                "args": [],
-                "line": 9
+                "args": [
+                    {
+                        "name": "todoStore",
+                        "type": "TodoStoreService",
+                        "deprecated": false,
+                        "deprecationMessage": ""
+                    }
+                ],
+                "line": 9,
+                "jsdoctags": [
+                    {
+                        "name": "todoStore",
+                        "type": "TodoStoreService",
+                        "deprecated": false,
+                        "deprecationMessage": "",
+                        "tagName": {
+                            "text": "param"
+                        }
+                    }
+                ]
             },
             "implements": [
                 "OnInit"
             ],
-            "templateData": "<input #todo (keyup.enter)=\"addTodo(todo)\" />\n<button type=\"button\" (click)=\"addTodo(todo)\">Add</button>\n"
+            "templateData": "<input #todoTitle (keyup.enter)=\"addTodo(todoTitle)\" />\n<button type=\"button\" (click)=\"addTodo(todoTitle)\">Add</button>\n"
         },
         {
             "name": "TodoComponent",
-            "id": "component-TodoComponent-2b4e9a8cf8c3ce89281ab793c5e1361341e957f5e51ccfc0a82f05d957947cc3f01da820f88fb9581c70fe8b03dbbdb5dfb92a6d25dd2521cb06d04136b73153",
+            "id": "component-TodoComponent-62aee71af98616ced8076d86040f33238fc104a01c9427a0cc991ab1c9b43a9b6f92d7e5a60b9e3645ce35299fd2ddcb45f296d0c21f8d2cf8f0e7326b95cec2",
             "file": "src/app/todoes/todo/todo.component.ts",
             "encapsulation": [],
             "entryComponents": [],
@@ -516,11 +402,10 @@
             "inputsClass": [
                 {
                     "name": "todo",
-                    "defaultValue": "''",
                     "deprecated": false,
                     "deprecationMessage": "",
-                    "line": 9,
-                    "type": "string",
+                    "line": 11,
+                    "type": "Todo",
                     "decorators": []
                 }
             ],
@@ -533,9 +418,37 @@
                     "optional": false,
                     "returnType": "void",
                     "typeParameters": [],
-                    "line": 13,
+                    "line": 15,
                     "deprecated": false,
                     "deprecationMessage": ""
+                },
+                {
+                    "name": "onDelete",
+                    "args": [
+                        {
+                            "name": "id",
+                            "type": "string",
+                            "deprecated": false,
+                            "deprecationMessage": ""
+                        }
+                    ],
+                    "optional": false,
+                    "returnType": "void",
+                    "typeParameters": [],
+                    "line": 17,
+                    "deprecated": false,
+                    "deprecationMessage": "",
+                    "jsdoctags": [
+                        {
+                            "name": "id",
+                            "type": "string",
+                            "deprecated": false,
+                            "deprecationMessage": "",
+                            "tagName": {
+                                "text": "param"
+                            }
+                        }
+                    ]
                 }
             ],
             "deprecated": false,
@@ -545,7 +458,7 @@
             "description": "",
             "rawdescription": "\n",
             "type": "component",
-            "sourceCode": "import { Component, Input, OnInit } from '@angular/core';\n\n@Component({\n  selector: 'app-todo',\n  templateUrl: './todo.component.html',\n  styleUrls: ['./todo.component.scss'],\n})\nexport class TodoComponent implements OnInit {\n  @Input() todo: string = '';\n\n  constructor() {}\n\n  ngOnInit(): void {}\n}\n",
+            "sourceCode": "import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';\nimport { Todo } from 'src/app/models/todo.model';\nimport { TodoStoreService } from 'src/app/store/todo-store/todo-store.service';\n\n@Component({\n  selector: 'app-todo',\n  templateUrl: './todo.component.html',\n  styleUrls: ['./todo.component.scss'],\n})\nexport class TodoComponent implements OnInit {\n  @Input() todo?: Todo;\n\n  constructor(private readonly todoStore: TodoStoreService) {}\n\n  ngOnInit(): void {}\n\n  onDelete(id: string) {\n    this.todoStore.delete(id);\n  }\n}\n",
             "assetsDirs": [],
             "styleUrlsData": [
                 {
@@ -559,17 +472,35 @@
                 "description": "",
                 "deprecated": false,
                 "deprecationMessage": "",
-                "args": [],
-                "line": 9
+                "args": [
+                    {
+                        "name": "todoStore",
+                        "type": "TodoStoreService",
+                        "deprecated": false,
+                        "deprecationMessage": ""
+                    }
+                ],
+                "line": 11,
+                "jsdoctags": [
+                    {
+                        "name": "todoStore",
+                        "type": "TodoStoreService",
+                        "deprecated": false,
+                        "deprecationMessage": "",
+                        "tagName": {
+                            "text": "param"
+                        }
+                    }
+                ]
             },
             "implements": [
                 "OnInit"
             ],
-            "templateData": "<li>{{ todo }}</li>\n"
+            "templateData": "<li *ngIf=\"todo\">\n  {{ todo.title }}\n  <button [attr.data-testid]=\"todo.id\" (click)=\"onDelete(todo.id)\">\n    Delete\n  </button>\n</li>\n"
         },
         {
             "name": "TodoesComponent",
-            "id": "component-TodoesComponent-3437fa29b42408d0ee2670f6ddd68b93263d25526e9d47f804890a4008b1fb8ae18eeafa31b6a57e37782c7ad800ffa1476c0cfc35fb81a66da14be8fa1e6411",
+            "id": "component-TodoesComponent-0ede628ae2ebf08747d6c7f0932638d70c243950b7226f545a37c20abc7a2140b997e2d9c40d09786794ca0eae56e300d5e8801afe6edf882d84972da1e374be",
             "file": "src/app/todoes/todoes.component.ts",
             "encapsulation": [],
             "entryComponents": [],
@@ -585,31 +516,21 @@
                 "./todoes.component.html"
             ],
             "viewProviders": [],
-            "inputsClass": [
+            "inputsClass": [],
+            "outputsClass": [],
+            "propertiesClass": [
                 {
-                    "name": "todoes",
-                    "defaultValue": "[]",
+                    "name": "todoes$",
+                    "defaultValue": "this.todoStore.todoes$",
                     "deprecated": false,
                     "deprecationMessage": "",
-                    "line": 9,
-                    "type": "string[]",
-                    "decorators": []
-                }
-            ],
-            "outputsClass": [],
-            "propertiesClass": [],
-            "methodsClass": [
-                {
-                    "name": "ngOnInit",
-                    "args": [],
+                    "type": "",
                     "optional": false,
-                    "returnType": "void",
-                    "typeParameters": [],
-                    "line": 13,
-                    "deprecated": false,
-                    "deprecationMessage": ""
+                    "description": "",
+                    "line": 10
                 }
             ],
+            "methodsClass": [],
             "deprecated": false,
             "deprecationMessage": "",
             "hostBindings": [],
@@ -617,7 +538,7 @@
             "description": "",
             "rawdescription": "\n",
             "type": "component",
-            "sourceCode": "import { Component, Input, OnInit } from '@angular/core';\n\n@Component({\n  selector: 'app-todoes',\n  templateUrl: './todoes.component.html',\n  styleUrls: ['./todoes.component.scss'],\n})\nexport class TodoesComponent implements OnInit {\n  @Input() todoes: string[] = [];\n\n  constructor() {}\n\n  ngOnInit(): void {}\n}\n",
+            "sourceCode": "import { Component } from '@angular/core';\nimport { TodoStoreService } from '../store/todo-store/todo-store.service';\n\n@Component({\n  selector: 'app-todoes',\n  templateUrl: './todoes.component.html',\n  styleUrls: ['./todoes.component.scss'],\n})\nexport class TodoesComponent {\n  todoes$ = this.todoStore.todoes$;\n\n  constructor(private readonly todoStore: TodoStoreService) {}\n}\n",
             "assetsDirs": [],
             "styleUrlsData": [
                 {
@@ -631,25 +552,40 @@
                 "description": "",
                 "deprecated": false,
                 "deprecationMessage": "",
-                "args": [],
-                "line": 9
+                "args": [
+                    {
+                        "name": "todoStore",
+                        "type": "TodoStoreService",
+                        "deprecated": false,
+                        "deprecationMessage": ""
+                    }
+                ],
+                "line": 10,
+                "jsdoctags": [
+                    {
+                        "name": "todoStore",
+                        "type": "TodoStoreService",
+                        "deprecated": false,
+                        "deprecationMessage": "",
+                        "tagName": {
+                            "text": "param"
+                        }
+                    }
+                ]
             },
-            "implements": [
-                "OnInit"
-            ],
-            "templateData": "<ul>\n  <app-todo *ngFor=\"let todo of todoes\" [todo]=\"todo\"></app-todo>\n</ul>\n"
+            "templateData": "<ul>\n  <app-todo *ngFor=\"let todo of todoes$ | async\" [todo]=\"todo\"></app-todo>\n</ul>\n"
         }
     ],
     "modules": [
         {
             "name": "AppModule",
-            "id": "module-AppModule-539f58e0ca2c993e547d5b9c7e34bff82c61fbdfcc23e861f3eae8a9ecbe2f399c308320cacb6bc95f8acce527c853c92b58b0bcbd29daedb3578a26de3a055d",
+            "id": "module-AppModule-ecf8ee65faf02d26de74113e50ebe4eea120f74ef24e671db341af895da560b75da1c346df8449f7db649f3a875a57687bf405d34c9e8f423642dbe9a12125a0",
             "description": "",
             "deprecationMessage": "",
             "deprecated": false,
             "file": "src/app/app.module.ts",
             "methods": [],
-            "sourceCode": "import { NgModule } from '@angular/core';\nimport { BrowserModule } from '@angular/platform-browser';\n\nimport { AppComponent } from './app.component';\nimport { TodoesComponent } from './todoes/todoes.component';\nimport { TodoComponent } from './todoes/todo/todo.component';\nimport { TodoAddComponent } from './todo-add/todo-add.component';\nimport { TitleComponent } from './title/title.component';\nimport { TaskComponent } from './task/task.component';\n\n@NgModule({\n  declarations: [\n    AppComponent,\n    TodoesComponent,\n    TodoComponent,\n    TodoAddComponent,\n    TitleComponent,\n    TaskComponent\n  ],\n  imports: [\n    BrowserModule\n  ],\n  providers: [],\n  bootstrap: [AppComponent]\n})\nexport class AppModule { }\n",
+            "sourceCode": "import { NgModule } from '@angular/core';\nimport { BrowserModule } from '@angular/platform-browser';\n\nimport { AppComponent } from './app.component';\nimport { TodoesComponent } from './todoes/todoes.component';\nimport { TodoComponent } from './todoes/todo/todo.component';\nimport { TodoAddComponent } from './todo-add/todo-add.component';\nimport { TitleComponent } from './title/title.component';\n\n@NgModule({\n  declarations: [\n    AppComponent,\n    TodoesComponent,\n    TodoComponent,\n    TodoAddComponent,\n    TitleComponent,\n  ],\n  imports: [BrowserModule],\n  providers: [],\n  bootstrap: [AppComponent],\n})\nexport class AppModule {}\n",
             "children": [
                 {
                     "type": "providers",
@@ -660,9 +596,6 @@
                     "elements": [
                         {
                             "name": "AppComponent"
-                        },
-                        {
-                            "name": "TaskComponent"
                         },
                         {
                             "name": "TitleComponent"
@@ -704,26 +637,6 @@
     "miscellaneous": {
         "variables": [
             {
-                "name": "Archived",
-                "ctype": "miscellaneous",
-                "subtype": "variable",
-                "file": "src/app/task/task.stories.ts",
-                "deprecated": false,
-                "deprecationMessage": "",
-                "type": "object",
-                "defaultValue": "{\n  ...Default,\n  args: {\n    task: { ...defaultTask(), state: 'TASK_ARCHIVED' },\n    state: 'TASK_ARCHIVED',\n  },\n}"
-            },
-            {
-                "name": "Default",
-                "ctype": "miscellaneous",
-                "subtype": "variable",
-                "file": "src/app/task/task.stories.ts",
-                "deprecated": false,
-                "deprecationMessage": "",
-                "type": "StoryObj<TaskComponent>",
-                "defaultValue": "{\n  render: (args) => ({\n    template: `<app-task></app-task>`,\n    props: args,\n  }),\n  args: { task: defaultTask() },\n}"
-            },
-            {
                 "name": "Default",
                 "ctype": "miscellaneous",
                 "subtype": "variable",
@@ -751,7 +664,7 @@
                 "deprecated": false,
                 "deprecationMessage": "",
                 "type": "StoryObj<TodoesComponent>",
-                "defaultValue": "{\n  render: (args) => ({\n    template: `<app-todoes [todoes]=\"todoes\"></app-todoes>`,\n    props: args,\n  }),\n  args: { todoes: ['Test1', 'Test2', 'Test3'] },\n}"
+                "defaultValue": "{\n  render: (args) => ({\n    template: `<app-todoes></app-todoes>`,\n    props: args,\n  }),\n  args: {},\n}"
             },
             {
                 "name": "Default",
@@ -761,7 +674,17 @@
                 "deprecated": false,
                 "deprecationMessage": "",
                 "type": "StoryObj<TodoComponent>",
-                "defaultValue": "{\n  render: (args) => ({\n    template: `<app-todo [todo]=\"todo\"></app-todo>`,\n    props: args,\n  }),\n  args: {\n    todo: 'Todo をここに表示する',\n  },\n}"
+                "defaultValue": "{\n  render: (args) => ({\n    template: `<app-todo [todo]=\"todo\"></app-todo>`,\n    props: args,\n  }),\n  args: {\n    todo: createTodo('Todo'),\n  },\n}"
+            },
+            {
+                "name": "Delete",
+                "ctype": "miscellaneous",
+                "subtype": "variable",
+                "file": "src/app/todoes/todoes.stories.ts",
+                "deprecated": false,
+                "deprecationMessage": "",
+                "type": "StoryObj<TodoesComponent>",
+                "defaultValue": "{\n  name: 'Todo を削除する',\n  render: (args) => ({\n    template: `<app-todoes></app-todoes>`,\n    props: args,\n  }),\n  args: {},\n  play: async () => {\n    const deleteTodo2 = await screen.findByTestId('2');\n    fireEvent.click(deleteTodo2);\n  },\n}"
             },
             {
                 "name": "Delete",
@@ -771,7 +694,7 @@
                 "deprecated": false,
                 "deprecationMessage": "",
                 "type": "StoryObj<TodoComponent>",
-                "defaultValue": "{\n  render: (args) => ({\n    template: `<app-todo [todo]=\"todo\"></app-todo>`,\n    props: args,\n  }),\n  args: {\n    todo: 'Todo',\n  },\n  play: async () => {\n    const deleteButton = screen.getByRole('button');\n    fireEvent.click(deleteButton);\n  },\n}"
+                "defaultValue": "{\n  name: '削除するボタンを押す',\n  render: (args) => ({\n    template: `<app-todo [todo]=\"todo\"></app-todo>`,\n    props: args,\n  }),\n  args: {\n    todo: createTodo('Todo'),\n  },\n  play: async () => {\n    const deleteButton = screen.getByRole('button');\n    fireEvent.click(deleteButton);\n  },\n}"
             },
             {
                 "name": "environment",
@@ -794,63 +717,50 @@
                 "defaultValue": "{\n  production: false\n}"
             },
             {
-                "name": "Pinned",
+                "name": "todoStore",
                 "ctype": "miscellaneous",
                 "subtype": "variable",
-                "file": "src/app/task/task.stories.ts",
+                "file": "src/app/store/todo-store/todo.store.ts",
                 "deprecated": false,
                 "deprecationMessage": "",
-                "type": "object",
-                "defaultValue": "{\n  ...Default,\n  args: {\n    task: { ...defaultTask(), state: 'TASK_PINNED' },\n  },\n}"
+                "type": "",
+                "defaultValue": "createStore(\r\n  { name: 'todo' },\r\n  withProps<TodoProps>({\r\n    todoes: [createTodo('Todo1'), createTodo('Todo2'), createTodo('Todo3')],\r\n  })\r\n)"
             }
         ],
         "functions": [
             {
-                "name": "defaultTask",
-                "file": "src/app/models/task.model.ts",
+                "name": "createTodo",
+                "file": "src/app/models/todo.model.ts",
                 "ctype": "miscellaneous",
                 "subtype": "function",
                 "deprecated": false,
                 "deprecationMessage": "",
                 "description": "",
-                "args": []
+                "args": [
+                    {
+                        "name": "title",
+                        "type": "string",
+                        "deprecated": false,
+                        "deprecationMessage": ""
+                    }
+                ],
+                "returnType": "Todo",
+                "jsdoctags": [
+                    {
+                        "name": "title",
+                        "type": "string",
+                        "deprecated": false,
+                        "deprecationMessage": "",
+                        "tagName": {
+                            "text": "param"
+                        }
+                    }
+                ]
             }
         ],
         "typealiases": [],
         "enumerations": [],
         "groupedVariables": {
-            "src/app/task/task.stories.ts": [
-                {
-                    "name": "Archived",
-                    "ctype": "miscellaneous",
-                    "subtype": "variable",
-                    "file": "src/app/task/task.stories.ts",
-                    "deprecated": false,
-                    "deprecationMessage": "",
-                    "type": "object",
-                    "defaultValue": "{\n  ...Default,\n  args: {\n    task: { ...defaultTask(), state: 'TASK_ARCHIVED' },\n    state: 'TASK_ARCHIVED',\n  },\n}"
-                },
-                {
-                    "name": "Default",
-                    "ctype": "miscellaneous",
-                    "subtype": "variable",
-                    "file": "src/app/task/task.stories.ts",
-                    "deprecated": false,
-                    "deprecationMessage": "",
-                    "type": "StoryObj<TaskComponent>",
-                    "defaultValue": "{\n  render: (args) => ({\n    template: `<app-task></app-task>`,\n    props: args,\n  }),\n  args: { task: defaultTask() },\n}"
-                },
-                {
-                    "name": "Pinned",
-                    "ctype": "miscellaneous",
-                    "subtype": "variable",
-                    "file": "src/app/task/task.stories.ts",
-                    "deprecated": false,
-                    "deprecationMessage": "",
-                    "type": "object",
-                    "defaultValue": "{\n  ...Default,\n  args: {\n    task: { ...defaultTask(), state: 'TASK_PINNED' },\n  },\n}"
-                }
-            ],
             "src/app/title/title.stories.ts": [
                 {
                     "name": "Default",
@@ -884,7 +794,17 @@
                     "deprecated": false,
                     "deprecationMessage": "",
                     "type": "StoryObj<TodoesComponent>",
-                    "defaultValue": "{\n  render: (args) => ({\n    template: `<app-todoes [todoes]=\"todoes\"></app-todoes>`,\n    props: args,\n  }),\n  args: { todoes: ['Test1', 'Test2', 'Test3'] },\n}"
+                    "defaultValue": "{\n  render: (args) => ({\n    template: `<app-todoes></app-todoes>`,\n    props: args,\n  }),\n  args: {},\n}"
+                },
+                {
+                    "name": "Delete",
+                    "ctype": "miscellaneous",
+                    "subtype": "variable",
+                    "file": "src/app/todoes/todoes.stories.ts",
+                    "deprecated": false,
+                    "deprecationMessage": "",
+                    "type": "StoryObj<TodoesComponent>",
+                    "defaultValue": "{\n  name: 'Todo を削除する',\n  render: (args) => ({\n    template: `<app-todoes></app-todoes>`,\n    props: args,\n  }),\n  args: {},\n  play: async () => {\n    const deleteTodo2 = await screen.findByTestId('2');\n    fireEvent.click(deleteTodo2);\n  },\n}"
                 }
             ],
             "src/app/todoes/todo/todo.stories.ts": [
@@ -896,7 +816,7 @@
                     "deprecated": false,
                     "deprecationMessage": "",
                     "type": "StoryObj<TodoComponent>",
-                    "defaultValue": "{\n  render: (args) => ({\n    template: `<app-todo [todo]=\"todo\"></app-todo>`,\n    props: args,\n  }),\n  args: {\n    todo: 'Todo をここに表示する',\n  },\n}"
+                    "defaultValue": "{\n  render: (args) => ({\n    template: `<app-todo [todo]=\"todo\"></app-todo>`,\n    props: args,\n  }),\n  args: {\n    todo: createTodo('Todo'),\n  },\n}"
                 },
                 {
                     "name": "Delete",
@@ -906,7 +826,7 @@
                     "deprecated": false,
                     "deprecationMessage": "",
                     "type": "StoryObj<TodoComponent>",
-                    "defaultValue": "{\n  render: (args) => ({\n    template: `<app-todo [todo]=\"todo\"></app-todo>`,\n    props: args,\n  }),\n  args: {\n    todo: 'Todo',\n  },\n  play: async () => {\n    const deleteButton = screen.getByRole('button');\n    fireEvent.click(deleteButton);\n  },\n}"
+                    "defaultValue": "{\n  name: '削除するボタンを押す',\n  render: (args) => ({\n    template: `<app-todo [todo]=\"todo\"></app-todo>`,\n    props: args,\n  }),\n  args: {\n    todo: createTodo('Todo'),\n  },\n  play: async () => {\n    const deleteButton = screen.getByRole('button');\n    fireEvent.click(deleteButton);\n  },\n}"
                 }
             ],
             "src/environments/environment.prod.ts": [
@@ -932,19 +852,50 @@
                     "type": "object",
                     "defaultValue": "{\n  production: false\n}"
                 }
+            ],
+            "src/app/store/todo-store/todo.store.ts": [
+                {
+                    "name": "todoStore",
+                    "ctype": "miscellaneous",
+                    "subtype": "variable",
+                    "file": "src/app/store/todo-store/todo.store.ts",
+                    "deprecated": false,
+                    "deprecationMessage": "",
+                    "type": "",
+                    "defaultValue": "createStore(\r\n  { name: 'todo' },\r\n  withProps<TodoProps>({\r\n    todoes: [createTodo('Todo1'), createTodo('Todo2'), createTodo('Todo3')],\r\n  })\r\n)"
+                }
             ]
         },
         "groupedFunctions": {
-            "src/app/models/task.model.ts": [
+            "src/app/models/todo.model.ts": [
                 {
-                    "name": "defaultTask",
-                    "file": "src/app/models/task.model.ts",
+                    "name": "createTodo",
+                    "file": "src/app/models/todo.model.ts",
                     "ctype": "miscellaneous",
                     "subtype": "function",
                     "deprecated": false,
                     "deprecationMessage": "",
                     "description": "",
-                    "args": []
+                    "args": [
+                        {
+                            "name": "title",
+                            "type": "string",
+                            "deprecated": false,
+                            "deprecationMessage": ""
+                        }
+                    ],
+                    "returnType": "Todo",
+                    "jsdoctags": [
+                        {
+                            "name": "title",
+                            "type": "string",
+                            "deprecated": false,
+                            "deprecationMessage": "",
+                            "tagName": {
+                                "text": "param"
+                            }
+                        }
+                    ]
                 }
             ]
         },
@@ -953,7 +904,7 @@
     },
     "routes": [],
     "coverage": {
-        "count": 1,
+        "count": 0,
         "status": "low",
         "files": [
             {
@@ -962,63 +913,52 @@
                 "linktype": "component",
                 "name": "AppComponent",
                 "coveragePercent": 0,
+                "coverageCount": "0/2",
+                "status": "low"
+            },
+            {
+                "filePath": "src/app/models/todo.model.ts",
+                "type": "interface",
+                "linktype": "interface",
+                "name": "Todo",
+                "coveragePercent": 0,
+                "coverageCount": "0/3",
+                "status": "low"
+            },
+            {
+                "filePath": "src/app/models/todo.model.ts",
+                "type": "function",
+                "linktype": "miscellaneous",
+                "linksubtype": "function",
+                "name": "createTodo",
+                "coveragePercent": 0,
+                "coverageCount": "0/1",
+                "status": "low"
+            },
+            {
+                "filePath": "src/app/store/todo-store/todo-store.service.ts",
+                "type": "injectable",
+                "linktype": "injectable",
+                "name": "TodoStoreService",
+                "coveragePercent": 0,
                 "coverageCount": "0/4",
                 "status": "low"
             },
             {
-                "filePath": "src/app/models/task.model.ts",
+                "filePath": "src/app/store/todo-store/todo.store.ts",
                 "type": "interface",
                 "linktype": "interface",
-                "name": "Task",
+                "name": "TodoProps",
                 "coveragePercent": 0,
-                "coverageCount": "0/5",
+                "coverageCount": "0/2",
                 "status": "low"
             },
             {
-                "filePath": "src/app/models/task.model.ts",
-                "type": "function",
-                "linktype": "miscellaneous",
-                "linksubtype": "function",
-                "name": "defaultTask",
-                "coveragePercent": 0,
-                "coverageCount": "0/1",
-                "status": "low"
-            },
-            {
-                "filePath": "src/app/task/task.component.ts",
-                "type": "component",
-                "linktype": "component",
-                "name": "TaskComponent",
-                "coveragePercent": 25,
-                "coverageCount": "2/8",
-                "status": "low"
-            },
-            {
-                "filePath": "src/app/task/task.stories.ts",
+                "filePath": "src/app/store/todo-store/todo.store.ts",
                 "type": "variable",
                 "linktype": "miscellaneous",
                 "linksubtype": "variable",
-                "name": "Archived",
-                "coveragePercent": 0,
-                "coverageCount": "0/1",
-                "status": "low"
-            },
-            {
-                "filePath": "src/app/task/task.stories.ts",
-                "type": "variable",
-                "linktype": "miscellaneous",
-                "linksubtype": "variable",
-                "name": "Default",
-                "coveragePercent": 0,
-                "coverageCount": "0/1",
-                "status": "low"
-            },
-            {
-                "filePath": "src/app/task/task.stories.ts",
-                "type": "variable",
-                "linktype": "miscellaneous",
-                "linksubtype": "variable",
-                "name": "Pinned",
+                "name": "todoStore",
                 "coveragePercent": 0,
                 "coverageCount": "0/1",
                 "status": "low"
@@ -1048,7 +988,7 @@
                 "linktype": "component",
                 "name": "TodoAddComponent",
                 "coveragePercent": 0,
-                "coverageCount": "0/5",
+                "coverageCount": "0/4",
                 "status": "low"
             },
             {
@@ -1067,7 +1007,7 @@
                 "linktype": "component",
                 "name": "TodoComponent",
                 "coveragePercent": 0,
-                "coverageCount": "0/4",
+                "coverageCount": "0/5",
                 "status": "low"
             },
             {
@@ -1096,7 +1036,7 @@
                 "linktype": "component",
                 "name": "TodoesComponent",
                 "coveragePercent": 0,
-                "coverageCount": "0/4",
+                "coverageCount": "0/3",
                 "status": "low"
             },
             {
@@ -1105,6 +1045,16 @@
                 "linktype": "miscellaneous",
                 "linksubtype": "variable",
                 "name": "Default",
+                "coveragePercent": 0,
+                "coverageCount": "0/1",
+                "status": "low"
+            },
+            {
+                "filePath": "src/app/todoes/todoes.stories.ts",
+                "type": "variable",
+                "linktype": "miscellaneous",
+                "linksubtype": "variable",
+                "name": "Delete",
                 "coveragePercent": 0,
                 "coverageCount": "0/1",
                 "status": "low"

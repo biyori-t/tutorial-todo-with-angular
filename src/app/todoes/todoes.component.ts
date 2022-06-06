@@ -1,20 +1,13 @@
-import { Component, Input, OnInit } from '@angular/core';
-import { Todo } from '../models/todo.model';
+import { Component } from '@angular/core';
+import { TodoStoreService } from '../store/todo-store/todo-store.service';
 
 @Component({
   selector: 'app-todoes',
   templateUrl: './todoes.component.html',
   styleUrls: ['./todoes.component.scss'],
 })
-export class TodoesComponent implements OnInit {
-  @Input() todoes: Todo[] = [];
+export class TodoesComponent {
+  todoes$ = this.todoStore.todoes$;
 
-  constructor() {}
-
-  ngOnInit(): void {}
-
-  onDelete(id: number) {
-    this.todoes = this.todoes.filter((todo) => todo.id !== id);
-    console.log(this.todoes);
-  }
+  constructor(private readonly todoStore: TodoStoreService) {}
 }
